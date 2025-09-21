@@ -1,68 +1,24 @@
-:root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
-
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+@layer base{
+  :root{ color-scheme: dark; }
+  body{@apply bg-slate-950 text-slate-100 antialiased;}
 }
 
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
-}
-a:hover {
-  color: #535bf2;
-}
-
-body {
-  margin: 0;
-  display: flex;
-  place-items: center;
-  min-width: 320px;
-  min-height: 100vh;
-}
-
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
-}
-
-button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: #1a1a1a;
-  cursor: pointer;
-  transition: border-color 0.25s;
-}
-button:hover {
-  border-color: #646cff;
-}
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
-}
-
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
-  a:hover {
-    color: #747bff;
-  }
-  button {
-    background-color: #f9f9f9;
-  }
+@layer components{
+  .container-outer{@apply max-w-6xl mx-auto px-4 md:px-6;}
+  .card{@apply bg-slate-900/70 border border-slate-800 rounded-2xl p-5 shadow-card;}
+  .nav{@apply sticky top-0 z-10 w-full bg-slate-950/80 backdrop-blur border-b border-slate-800;}
+  .nav-inner{@apply container-outer py-3 flex flex-wrap gap-2;}
+  .nav-link{@apply px-3 py-2 rounded-xl bg-slate-900 border border-slate-800 text-slate-200 hover:bg-slate-800 transition;}
+  .nav-link-active{@apply bg-emerald-500 text-slate-950 border-emerald-400;}
+  .row{@apply grid gap-4 md:grid-cols-2;}
+  .metric{@apply bg-slate-900 border border-slate-800 rounded-xl p-4 flex flex-col gap-1;}
+  .metric b{@apply text-2xl;}
+  .btn{@apply inline-flex items-center justify-center px-4 py-2 rounded-xl font-semibold bg-emerald-500 text-slate-950 hover:bg-emerald-400 transition disabled:opacity-60;}
+  .tbl{@apply w-full text-sm;}
+  .tbl th, .tbl td{@apply border-b border-slate-800 px-3 py-2 text-left;}
+  .small{@apply text-sm text-slate-400;}
 }
