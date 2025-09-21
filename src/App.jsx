@@ -1,34 +1,42 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { NavLink, Routes, Route } from 'react-router-dom'
+import Home from './pages/home'
+import Staffing from './pages/Staffing'
+import ROI from './pages/ROI'
+import Flow from './pages/Flow'
+import Sensitivity from './pages/Sensitivity'
+import Inventory from './pages/Inventory'
+
 
 function App() {
-  const [count, setCount] = useState(0)
+  
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+    <div>
+      <div className="nav">
+        <div className='nav-inner'>
+        <NavLink to="/">Home</NavLink>
+        <NavLink to="/staffing">Staffing</NavLink>
+        <NavLink to="/roi">ROI</NavLink>
+        <NavLink to="/flow">Flow</NavLink>
+        <NavLink to="/sensitivity">Sensitivity</NavLink>
+        <NavLink to="/inventory">Inventory</NavLink>
+        </div>
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
+
+      <div className="container-outer my-4">
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/staffing" element={<Staffing />} />
+          <Route path="/roi" element={<ROI />} />
+          <Route path="/flow" element={<Flow />} />
+          <Route path="/sensitivity" element={<Sensitivity />} />
+          <Route path="/inventory" element={<Inventory />} />
+        </Routes>
+        <div className='small my-4'>Healthcare DSS — React + Tailwind CSS </div>
       </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
+
+
+    </div>
   )
 }
 
