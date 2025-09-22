@@ -1,0 +1,7 @@
+staff_id,name,role,wage_per_hour,skills
+S1,Ana Gomez,RN,48,"RN,IV"
+S2,Bo Chen,RN,46,"RN"
+S3,Chris Patel,LPN,35,"LPN"
+S4,Dee Morgan,Clerk,25,"Clerk,Admin"
+S5,Erik Shah,RN,47,"RN,ICU"
+S6,Farah Ali,LPN,36,"LPN,WoundCare"
