@@ -225,42 +225,63 @@ function defineSchema(s) {
 export const SCHEMA = {
   staffRoster: defineSchema({
     name: "staffRoster",
-    required: ["staff_id", "name", "role", "start_date", "hourly_rate"],
-    numbers: ["hourly_rate"],
-    dates: ["start_date", "end_date"],
+    required: ["staff_id", "name", "role", "wage_per_hour"], // matches staff_roster.csv
+    numbers: ["wage_per_hour"],
+    // dates: [], // none in this file
     bounds: {
-      hourly_rate: { min: 0 },
+      wage_per_hour: { min: 0 },
     },
   }),
 
   shiftRequirements: defineSchema({
     name: "shiftRequirements",
-    required: ["date", "shift", "role", "required_count"],
-    numbers: ["required_count"],
-    integers: ["required_count"],
+    required: ["date", "shift", "role", "required"], // matches shift_requirements.csv
+    numbers: ["required"],
+    integers: ["required"],
     dates: ["date"],
     bounds: {
-      required_count: { min: 0, integer: true },
-      // optional: restrict shift names if your app uses a fixed set
-      // shift: { in: ["day", "evening", "night"] },
+      required: { min: 0, integer: true },
+      // If you want to lock shift names, uncomment:
+      // shift: { in: ["Day", "Evening", "Night"] },
     },
   }),
 
   inventory: defineSchema({
     name: "inventory",
-    required: ["item_id", "item_name", "quantity", "unit_cost"],
-    numbers: ["quantity", "unit_cost", "reorder_level"],
-    integers: ["quantity", "reorder_level"],
+    required: [
+      "item",
+      "annual_demand",
+      "unit_cost",
+      "setup_cost",
+      "holding_cost_rate",
+      "lead_time_days",
+      "sd_demand_daily",
+      "service_level",
+    ], // matches inventory.csv
+    numbers: [
+      "annual_demand",
+      "unit_cost",
+      "setup_cost",
+      "holding_cost_rate",
+      "lead_time_days",
+      "sd_demand_daily",
+      "service_level",
+    ],
+    // integers: ["annual_demand","lead_time_days"], // optional: only if you want strict ints
     bounds: {
-      quantity: { min: 0, integer: true },
-      reorder_level: { min: 0, integer: true },
+      annual_demand: { min: 0 },
       unit_cost: { min: 0 },
+      setup_cost: { min: 0 },
+      holding_cost_rate: { min: 0 },
+      lead_time_days: { min: 0 },
+      sd_demand_daily: { min: 0 },
+      service_level: { min: 0.5, max: 0.999 },
     },
   }),
 
   patientArrivals: defineSchema({
     name: "patientArrivals",
-    required: ["date", "hour", "arrivals"],
+    required: ["date", "hour", "arrivals"], // matches patient_arrivals.csv
     numbers: ["hour", "arrivals"],
     integers: ["hour", "arrivals"],
     dates: ["date"],
@@ -272,15 +293,16 @@ export const SCHEMA = {
 
   serviceRates: defineSchema({
     name: "serviceRates",
-    required: ["service", "rate", "service_level"],
-    numbers: ["rate", "service_level", "capacity_per_hour"],
+    required: ["unit", "avg_service_time_minutes", "servers"], // matches service_rates.csv
+    numbers: ["avg_service_time_minutes", "servers"],
+    integers: ["servers"],
     bounds: {
-      rate: { gt: 0 }, // strictly positive
-      service_level: { min: 0.5, max: 0.999 },
-      capacity_per_hour: { min: 0 }, // optional field
+      avg_service_time_minutes: { gt: 0 }, // strictly positive
+      servers: { min: 1, integer: true },
     },
   }),
 };
+
 
 export default {
   ensureRows,
