@@ -1,4 +1,4 @@
-// Inventory rules (simple, structured, no statistics)
+// Inventory rules 
 // Policy: "Days of cover" (s, S)
 // - safetyBufferDays: extra days of demand to carry as a buffer
 // - reviewPeriodDays: how often you typically place orders

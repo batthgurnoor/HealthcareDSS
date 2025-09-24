@@ -102,7 +102,7 @@ export function pickServerCount(
     Math.ceil(arrivalRatePerHour / (serviceRatePerHour * utilizationCap))
   );
 
-  // Increase servers until wait target also met (cap search to avoid loops)
+
   const MAX_SERVERS = 50;
   let choice = null;
   for (let s = startServers; s <= MAX_SERVERS; s++) {
