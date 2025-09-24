@@ -1,0 +1,5 @@
+item,annual_demand,unit_cost,setup_cost,holding_cost_rate,lead_time_days
+Surgical Gloves (M),52000,0.35,120,0.20,7
+Syringes 5mL,36000,0.12,100,0.20,10
+IV Catheters 18G,18000,0.80,140,0.20,5
+Alcohol Swabs,90000,0.05,80,0.20,3
