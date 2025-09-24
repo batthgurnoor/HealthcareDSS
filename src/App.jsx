@@ -3,7 +3,6 @@ import Home from './pages/home'
 import Staffing from './pages/Staffing'
 import ROI from './pages/ROI'
 import Flow from './pages/Flow'
-import Sensitivity from './pages/Sensitivity'
 import Inventory from './pages/Inventory'
 
 
@@ -18,7 +17,6 @@ function App() {
         <NavLink to="/staffing">Staffing</NavLink>
         <NavLink to="/roi">ROI</NavLink>
         <NavLink to="/flow">Flow</NavLink>
-        <NavLink to="/sensitivity">Sensitivity</NavLink>
         <NavLink to="/inventory">Inventory</NavLink>
         </div>
       </div>
@@ -29,7 +27,6 @@ function App() {
           <Route path="/staffing" element={<Staffing />} />
           <Route path="/roi" element={<ROI />} />
           <Route path="/flow" element={<Flow />} />
-          <Route path="/sensitivity" element={<Sensitivity />} />
           <Route path="/inventory" element={<Inventory />} />
         </Routes>
         <div className='small my-4'>Healthcare DSS — React + Tailwind CSS </div>
