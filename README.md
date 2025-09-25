@@ -38,7 +38,7 @@ Decisions:
 ---
 
 ## Installation
-
+```
 Prerequisites
 - Node.js ≥ 18 (LTS recommended)
 - npm ≥ 9
@@ -48,7 +48,7 @@ Clone & install
 git clone https://sc-gitlab.ufv.ca/202509cis480on1/gu26/healthcaredss.git
 cd healthcaredss
 npm install
-```
+
 PLEASE NOTE THAT IT IS VERY IMPORTANT TO RUN NPM INSTALL TO INSTALL ALL THE REQUIRED DEPENDENCIES.
 
 ---
