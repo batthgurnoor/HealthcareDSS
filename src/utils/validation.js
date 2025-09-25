@@ -1,4 +1,4 @@
-// validation.js (ESM only)
+
 // Tiny validation & coercion helpers for tabular data.
 
 //

@@ -1,4 +1,4 @@
-// /csv.js
+
 // ESM-only utility for reading & parsing CSV files with Papa Parse.
 import Papa from "papaparse";
 
