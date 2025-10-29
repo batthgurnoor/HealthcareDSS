@@ -18,7 +18,6 @@ Outputs:
 - data/predicted_demand.csv          (forecast demand per shift per scenario)
 - analysis/model_metrics.json        (R^2, RMSE, sample sizes)
 
-You will feed data/predicted_demand.csv into the optimization step in Assignment 2 (Task 2).
 """
 
 import os
@@ -37,13 +36,7 @@ def load_config(path="config/config.json"):
         return json.load(f)
 
 def load_history(path="data/patient_arrivals_history.csv"):
-    """
-    Required columns:
-      date (YYYY-MM-DD)
-      hour (0-23)
-      arrivals (float or int)
-      is_weekend (0/1) - optional; if missing we create it
-    """
+    
     df = pd.read_csv(path)
     df["date"] = pd.to_datetime(df["date"])
     df["hour"] = df["hour"].astype(int)
@@ -55,16 +48,7 @@ def load_history(path="data/patient_arrivals_history.csv"):
     return df
 
 def train_and_evaluate(df):
-    """
-    Sort by time so we can do a time-based split.
-    Use hour-of-day and weekend flag as features.
-    arrivals is the target.
-
-    We'll use an 80/20 split: first 80% rows = train, last 20% rows = test.
-
-    Return:
-      model, metrics dict, df_sorted
-    """
+    
     df_sorted = df.sort_values(["date", "hour"]).reset_index(drop=True)
 
     X = df_sorted[["hour", "is_weekend"]].values
@@ -98,10 +82,7 @@ def train_and_evaluate(df):
     return model, metrics, df_sorted
 
 def build_next_day_hourly_frame(df_sorted):
-    """
-    We will forecast the day AFTER the last date in the history.
-    Build a frame with that date and all 24 hours.
-    """
+    
     last_date = df_sorted["date"].max()
     next_date = last_date + timedelta(days=1)
 
@@ -114,9 +95,7 @@ def build_next_day_hourly_frame(df_sorted):
     return future
 
 def predict_hourly(model, future_df):
-    """
-    Predict arrivals per hour for a future day.
-    """
+   
     X_future = future_df[["hour", "is_weekend"]].values
     y_future = model.predict(X_future)
     future_df = future_df.copy()
@@ -124,12 +103,7 @@ def predict_hourly(model, future_df):
     return future_df
 
 def hour_to_shift(hour_int):
-    """
-    Simple shift mapping:
-      morning: 07-14
-      evening: 15-22
-      night:   23-06
-    """
+   
     h = int(hour_int)
     if 7 <= h <= 14:
         return "morning"
@@ -139,13 +113,7 @@ def hour_to_shift(hour_int):
         return "night"
 
 def roll_up_shifts(hourly_pred_df):
-    """
-    Sum hourly predictions into total patients per shift.
-    Output columns:
-      date (string)
-      shift
-      predicted_patients
-    """
+    
     tmp = hourly_pred_df.copy()
     tmp["shift"] = tmp["hour"].apply(hour_to_shift)
 
@@ -161,10 +129,7 @@ def roll_up_shifts(hourly_pred_df):
     return shift_totals
 
 def apply_scenarios(shift_totals_df, config):
-    """
-    Create pessimistic / baseline / optimistic scenarios using multipliers
-    defined in config/config.json.
-    """
+    
     pessim = config["forecastScenarios"]["pessimisticMultiplier"]
     base   = config["forecastScenarios"]["baselineMultiplier"]
     optim  = config["forecastScenarios"]["optimisticMultiplier"]
@@ -186,11 +151,7 @@ def apply_scenarios(shift_totals_df, config):
     return pd.DataFrame(rows)
 
 def save_outputs(predicted_df, metrics):
-    """
-    Write:
-    - data/predicted_demand.csv
-    - analysis/model_metrics.json
-    """
+    
     os.makedirs("data", exist_ok=True)
     os.makedirs("analysis", exist_ok=True)
 
@@ -214,7 +175,7 @@ def main():
     df_hist = load_history()
 
     if len(df_hist) < 30:
-        print("WARNING: fewer than 30 rows in history. The assignment expects >= 30 observations.")
+        print("WARNING: fewer than 30 rows in history. Expecting at least >= 30 observations.")
 
     print("Training simple regression model ...")
     model, metrics, df_sorted = train_and_evaluate(df_hist)
@@ -235,7 +196,6 @@ def main():
     print("Saving outputs ...")
     save_outputs(final_predictions, metrics)
 
-    print("Done. Next step: use data/predicted_demand.csv in the staffing optimization model (Task 2).")
-
+    
 if __name__ == "__main__":
     main()
