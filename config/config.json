@@ -10,7 +10,12 @@
   },
   "staffing": {
     "defaultHoursPerShift": 8,
-    "maxOneShiftPerDay": true
+    "maxOneShiftPerDay": true,
+    "capacityPerHourByRole": {
+      "RN": 3.0,
+      "LPN": 2.0,
+      "Clerk": 0.5
+    }
   },
   "forecastScenarios": {
     "pessimisticMultiplier": 0.8,
