@@ -18,6 +18,9 @@ function App() {
         <NavLink to="/roi">ROI</NavLink>
         <NavLink to="/flow">Flow</NavLink>
         <NavLink to="/inventory">Inventory</NavLink>
+        <NavLink to="/staffing-results" >
+            Staffing Results
+          </NavLink>
         </div>
       </div>
 
@@ -28,6 +31,7 @@ function App() {
           <Route path="/roi" element={<ROI />} />
           <Route path="/flow" element={<Flow />} />
           <Route path="/inventory" element={<Inventory />} />
+          <Route path="/staffing-results" element={<StaffingResults />} />
         </Routes>
         <div className='small my-4'>Healthcare DSS — React + Tailwind CSS </div>
       </div>
