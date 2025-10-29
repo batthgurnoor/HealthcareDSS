@@ -1,0 +1,24 @@
+{
+  "inventory": {
+    "defaultSafetyDays": 5,
+    "defaultReviewDays": 14
+  },
+  "patientFlow": {
+    "defaultUtilizationCap": 0.85,
+    "defaultQueueWaitTargetMinutes": 10,
+    "defaultServiceTimeMinutes": 12
+  },
+  "staffing": {
+    "defaultHoursPerShift": 8,
+    "maxOneShiftPerDay": true
+  },
+  "forecastScenarios": {
+    "pessimisticMultiplier": 0.8,
+    "baselineMultiplier": 1.0,
+    "optimisticMultiplier": 1.2
+  },
+  "finance": {
+    "defaultDiscountRatePercent": 8,
+    "defaultHorizonYears": 3
+  }
+}

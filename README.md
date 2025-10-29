@@ -131,3 +131,22 @@ Please see below for screen shots of both chat transcripts
 ## Notes & disclaimers
 
 - See `docs/design.md` for architecture & design choices, and `docs/user_guide.md` for screenshots and troubleshooting.
+
+
+
+## Assignment 2 Extensions
+
+This repository is the Assignment 2 version of the Healthcare DSS.
+
+New in Assignment 2:
+- Predictive analytics (forecast patient arrivals using regression)
+- Prescriptive analytics (optimize staffing using that forecast)
+- Scenario comparison (pessimistic / baseline / optimistic)
+- KPIs and ROI impact for management
+- Central config file (`config/config.json`) so assumptions are not hardcoded
+- `analysis/` folder for reproducible scripts:
+  - `predict_demand` (forecast demand)
+  - `optimize_staffing` (cost-minimizing staffing plan)
+
+These pieces feed into the existing DSS pages (Inventory, Patient Flow, Staffing, ROI).
+
