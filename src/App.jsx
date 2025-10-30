@@ -4,6 +4,7 @@ import Staffing from './pages/Staffing'
 import ROI from './pages/ROI'
 import Flow from './pages/Flow'
 import Inventory from './pages/Inventory'
+import StaffingResults from './pages/StaffingResults'
 
 
 function App() {

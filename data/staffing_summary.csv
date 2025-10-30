@@ -1,0 +1,10 @@
+date,shift,scenario,predicted_patients,total_capacity,shortfall,total_cost,coverage_rate,status
+2025-10-29,evening,baseline,54.18,56.0,0.0,944.0,1.0,Optimal
+2025-10-29,evening,optimistic,65.01,72.0,0.0,1128.0,1.0,Optimal
+2025-10-29,evening,pessimistic,43.34,48.0,0.0,752.0,1.0,Optimal
+2025-10-29,morning,baseline,38.4,40.0,0.0,660.0,1.0,Optimal
+2025-10-29,morning,optimistic,46.08,48.0,0.0,752.0,1.0,Optimal
+2025-10-29,morning,pessimistic,30.72,32.0,0.0,568.0,1.0,Optimal
+2025-10-29,night,baseline,28.54,32.0,0.0,568.0,1.0,Optimal
+2025-10-29,night,optimistic,34.25,40.0,0.0,660.0,1.0,Optimal
+2025-10-29,night,pessimistic,22.83,24.0,0.0,376.0,1.0,Optimal

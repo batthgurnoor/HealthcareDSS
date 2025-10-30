@@ -1,1 +1,0 @@
-This folder will hold predictive analytics code for Assignment 2.
