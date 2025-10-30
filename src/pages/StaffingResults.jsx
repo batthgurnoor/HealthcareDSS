@@ -1,8 +1,24 @@
 import { useState } from "react";
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
+import { useMemo } from "react";
+
 
 export default function StaffingResults() {
   const [rows, setRows] = useState([]);
   const [error, setError] = useState("");
+
+  const [scenario, setScenario] = useState("baseline");
+  const scenarioOptions = ["pessimistic", "baseline", "optimistic"];
+  const chartData = useMemo(() => {
+  if (!rows.length) return [];
+  return rows
+    .filter(r => r.scenario?.toLowerCase() === scenario)
+    .map(r => ({
+      key: `${r.date} ${r.shift}`,
+      predicted: r.predicted_patients ?? 0,
+      capacity: r.total_capacity ?? 0
+    }));
+}, [rows, scenario]);
 
   function parseCsv(text) {
 
@@ -85,14 +101,14 @@ export default function StaffingResults() {
       </p>
 
       <div className="p-4 rounded-2xl bg-gray-50 border">
-        <label className="block text-sm font-medium mb-2">
+        <label className="block text-sm font-medium mb-2 text-black">
           Upload staffing_summary.csv
         </label>
         <input
           type="file"
           accept=".csv"
           onChange={onUpload}
-          className="file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:bg-gray-800 file:text-white hover:file:bg-gray-700"
+          className="file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:bg-gray-800 file:text- hover:file:bg-gray-700"
         />
         <p className="text-xs text-gray-500 mt-2">
           Tip: Run the optimizer first:
@@ -147,31 +163,75 @@ export default function StaffingResults() {
             <tbody>
               {rows.map((r, idx) => (
                 <tr key={idx} className="odd:bg-white even:bg-gray-50">
-                  <td className="p-3">{r.date}</td>
-                  <td className="p-3 capitalize">{r.shift}</td>
-                  <td className="p-3 capitalize">{r.scenario}</td>
-                  <td className="p-3 text-right">
+                  <td className="p-3 text-black">{r.date}</td>
+                  <td className="p-3 capitalize text-black">{r.shift}</td>
+                  <td className="p-3 capitalize text-black">{r.scenario}</td>
+                  <td className="p-3 text-right text-black">
                     {r.predicted_patients?.toLocaleString(undefined, { maximumFractionDigits: 1 })}
                   </td>
-                  <td className="p-3 text-right">
+                  <td className="p-3 text-right text-black">
                     {r.total_capacity?.toLocaleString(undefined, { maximumFractionDigits: 1 })}
                   </td>
-                  <td className="p-3 text-right">
+                  <td className="p-3 text-right text-black">
                     {r.shortfall?.toLocaleString(undefined, { maximumFractionDigits: 1 })}
                   </td>
-                  <td className="p-3 text-right">
+                  <td className="p-3 text-right text-black">
                     {typeof r.total_cost === "number" ? `$${r.total_cost.toLocaleString(undefined, { maximumFractionDigits: 0 })}` : ""}
                   </td>
-                  <td className="p-3 text-right">
+                  <td className="p-3 text-right text-black">
                     {typeof r.coverage_rate === "number" ? `${(r.coverage_rate * 100).toFixed(1)}%` : ""}
                   </td>
-                  <td className="p-3">{r.status}</td>
+                  <td className="p-3 text-black">{r.status}</td>
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
       )}
+      <div className="p-4 rounded-2xl border">
+  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+    <div>
+      <div className="text-sm font-medium">Scenario chart</div>
+      <div className="text-xs text-gray-500">
+        Compare <span className="font-medium">Predicted</span> vs <span className="font-medium">Capacity</span> for the selected scenario.
+      </div>
+    </div>
+    <div>
+      <label className="text-sm mr-2">Scenario:</label>
+      <select
+        className="border rounded-xl px-3 py-2 text-sm text-black"
+        value={scenario}
+        onChange={(e) => setScenario(e.target.value)}
+      >
+        {scenarioOptions.map(opt => (
+          <option key={opt} value={opt}>{opt}</option>
+        ))}
+      </select>
+    </div>
+  </div>
+
+  <div className="mt-4 h-80">
+    {chartData.length === 0 ? (
+      <div className="text-sm text-gray-500">Upload a CSV to see the chart.</div>
+    ) : (
+      <ResponsiveContainer width="100%" height="100%">
+        <BarChart data={chartData}>
+          <CartesianGrid strokeDasharray="3 3" />
+          <XAxis dataKey="key" tick={{ fontSize: 10 }}  />
+          <YAxis />
+          <Tooltip />
+          <Legend />
+          <Bar dataKey="predicted" name="Predicted Patients" fill="#00a0fc" />
+          <Bar dataKey="capacity" name="Capacity (Patients)"  fill="#71b3d9"/>
+        </BarChart>
+      </ResponsiveContainer>
+    )}
+  </div>
+</div>
+
+
+
+
 
       <div className="text-xs text-gray-500">
         <div className="font-medium mb-1">Notes</div>
@@ -192,6 +252,10 @@ export default function StaffingResults() {
           </li>
         </ul>
       </div>
+      
     </div>
+    
+
+    
   );
 }
