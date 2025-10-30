@@ -62,19 +62,19 @@ Prerequisites
 
 Clone & install
 
-git clone https://sc-gitlab.ufv.ca/202509cis480on1/gu26/assignment2.git
+-git clone https://sc-gitlab.ufv.ca/202509cis480on1/gu26/assignment2.git
 
-cd assignment2
+-cd assignment2
 
-npm install
+-npm install
 
-pip install pandas scikit-learn
+-pip install pandas scikit-learn
 
-python analysis/predict_demand.py
+-python analysis/predict_demand.py
 
-pip install pulp
+-pip install pulp
 
-python analysis/optimize_staffing.py
+-python analysis/optimize_staffing.py
 
 After running the two commands above, open the app and use **Staffing Results** to upload `data/staffing_summary.csv` for an easy, manager‑friendly view.  
 
