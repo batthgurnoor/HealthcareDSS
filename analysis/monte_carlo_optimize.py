@@ -1,73 +1,58 @@
 #!/usr/bin/env python3
-"""
-Draws demand samples from prediction intervals and re-solves optimization to estimate
-distributions of total cost / coverage / shortfall.
-Inputs:
-  data/predicted_demand_shift_pi.csv
-  staff_roster.csv
-  config/config.json
-Outputs:
-  data/mc_summary.csv   (per draw + per shift KPIs)
-  analysis/mc_aggregate.json  (percentiles for managers)
-"""
-
-import os, json, math, random
+import os, json, random
 import pandas as pd
 import numpy as np
-from collections import defaultdict
-
-from optimize_staffing_core import solve_one # <- factor tiny core from optimize_staffing.py
+from optimize_staffing_core import solve_one  # reuse your core
 
 def load_cfg(path="config/config.json"):
     with open(path,"r") as f: return json.load(f)
 
 def load_shift_pi(path="data/predicted_demand_shift_pi.csv"):
-    df = pd.read_csv(path)
-    # expect: date, shift, predicted_patients, pi_lower, pi_upper
-    return df
+    return pd.read_csv(path)
 
-def sample_demand_row(row):
-    # Simple uniform-in-PI draw (transparent). Could swap to Normal if desired.
-    lo = float(row["pi_lower"]); hi = float(row["pi_upper"])
+def sample_demand(lo, hi):
     if hi < lo: hi = lo
     return random.uniform(lo, hi)
 
 def main():
     cfg = load_cfg()
     draws = int(cfg.get("uncertainty",{}).get("monteCarloDraws", 200))
-    shifts = load_shift_pi()
+    df = load_shift_pi()
 
-    records = []
+    recs = []
     for d in range(draws):
-        for _, r in shifts.iterrows():
-            sampled_demand = sample_demand_row(r)
-            # solve_one(date, shift, demand, cfg) should return cost, capacity, shortfall, coverage
-            sol = solve_one(r["date"], r["shift"], float(sampled_demand), cfg)
-            records.append({
+        for _, r in df.iterrows():
+            demand = sample_demand(float(r["pi_lower"]), float(r["pi_upper"]))
+            k = solve_one(r["date"], str(r["shift"]).lower().strip(), float(demand), cfg,
+                          roster_path="public/samples/staff_roster.csv")
+            recs.append({
                 "draw": d,
                 "date": r["date"],
-                "shift": r["shift"],
-                "demand_sample": sampled_demand,
-                **sol
+                "shift": str(r["shift"]).lower().strip(),
+                "demand_sample": demand,
+                "total_cost": k["total_cost"],
+                "coverage_rate": k["coverage_rate"],
+                "shortfall": k["shortfall"]
             })
 
-    out = pd.DataFrame(records)
     os.makedirs("data", exist_ok=True)
     os.makedirs("analysis", exist_ok=True)
+
+    out = pd.DataFrame(recs)
     out.to_csv("data/mc_summary.csv", index=False)
 
-    # Aggregate percentiles for managers (per shift)
-    pct = (out.groupby(["date","shift"])
-              .agg(cost_p50=("total_cost","median"),
-                   cost_p90=("total_cost", lambda x: np.percentile(x,90)),
-                   coverage_p50=("coverage_rate","median"),
-                   coverage_p10=("coverage_rate", lambda x: np.percentile(x,10)),
-                   shortfall_p90=("shortfall","median"))
-              .reset_index().to_dict(orient="records"))
+    # quick aggregate (per shift): probability of shortfall + coverage percentiles
+    def pct(a, q): return float(np.percentile(a, q))
+    g = out.groupby(["date","shift"])
+    agg = g.agg(
+        draws=("draw","nunique"),
+        prob_shortfall=("shortfall", lambda s: float((s>0).mean())),
+        coverage_p10=("coverage_rate", lambda s: pct(s, 10)),
+        coverage_p50=("coverage_rate", "median"),
+        coverage_p90=("coverage_rate", lambda s: pct(s, 90))
+    ).reset_index()
 
-    with open("analysis/mc_aggregate.json","w") as f:
-        json.dump({"draws": draws, "per_shift_stats": pct}, f, indent=2)
-
+    agg.to_json("analysis/mc_aggregate.json", orient="records", indent=2)
     print("[OK] data/mc_summary.csv")
     print("[OK] analysis/mc_aggregate.json")
 
