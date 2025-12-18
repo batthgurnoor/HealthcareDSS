@@ -25,5 +25,10 @@
   "finance": {
     "defaultDiscountRatePercent": 8,
     "defaultHorizonYears": 3
+  },
+  "uncertainty": {
+    "predictionIntervalLevel": 0.80,
+    "monteCarloDraws": 200,
+    "scenarioQuantiles": [0.10, 0.30, 0.50, 0.70, 0.90] 
   }
 }
