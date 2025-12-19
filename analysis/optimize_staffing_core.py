@@ -2,7 +2,8 @@
 import pandas as pd
 import pulp
 
-def summarize_roster(roster_path="staff_roster.csv"):
+
+def summarize_roster(roster_path="public/samples/staff_roster.csv"):
     """
     Summarize roster by role:
       - available headcount per role

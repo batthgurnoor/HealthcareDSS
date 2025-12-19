@@ -1,0 +1,29 @@
+[
+  {
+    "date":"2025-10-29",
+    "shift":"evening",
+    "draws":200,
+    "prob_shortfall":0.0,
+    "coverage_p10":1.0,
+    "coverage_p50":1.0,
+    "coverage_p90":1.0
+  },
+  {
+    "date":"2025-10-29",
+    "shift":"morning",
+    "draws":200,
+    "prob_shortfall":0.0,
+    "coverage_p10":1.0,
+    "coverage_p50":1.0,
+    "coverage_p90":1.0
+  },
+  {
+    "date":"2025-10-29",
+    "shift":"night",
+    "draws":200,
+    "prob_shortfall":0.0,
+    "coverage_p10":1.0,
+    "coverage_p50":1.0,
+    "coverage_p90":1.0
+  }
+]

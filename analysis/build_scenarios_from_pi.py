@@ -9,7 +9,7 @@ import os, json
 import pandas as pd
 import numpy as np
 
-def load_config(path="config/config.json"):
+def load_config(path="../config/config.json"):
     with open(path, "r") as f:
         return json.load(f)
 

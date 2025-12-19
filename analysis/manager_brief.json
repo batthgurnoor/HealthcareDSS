@@ -1,0 +1,37 @@
+[
+  {
+    "scenario": "best",
+    "total_cost": 3484.0,
+    "avg_coverage": 100.0,
+    "rows_with_shortfall": 0,
+    "avg_shortfall_probability": 0.0
+  },
+  {
+    "scenario": "high",
+    "total_cost": 2824.0,
+    "avg_coverage": 100.0,
+    "rows_with_shortfall": 0,
+    "avg_shortfall_probability": 0.0
+  },
+  {
+    "scenario": "low",
+    "total_cost": 1696.0,
+    "avg_coverage": 100.0,
+    "rows_with_shortfall": 0,
+    "avg_shortfall_probability": 0.0
+  },
+  {
+    "scenario": "median",
+    "total_cost": 2264.0,
+    "avg_coverage": 100.0,
+    "rows_with_shortfall": 0,
+    "avg_shortfall_probability": 0.0
+  },
+  {
+    "scenario": "worst",
+    "total_cost": 1136.0,
+    "avg_coverage": 100.0,
+    "rows_with_shortfall": 0,
+    "avg_shortfall_probability": 0.0
+  }
+]

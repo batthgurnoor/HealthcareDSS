@@ -1,0 +1,103 @@
+{
+  "summary": [
+    {
+      "date": "2025-10-29",
+      "shift": "evening",
+      "scenario": "baseline",
+      "predicted_patients": 54.18,
+      "total_capacity": 56.0,
+      "shortfall": 0.0,
+      "total_cost": 944.0,
+      "coverage_rate": 1.0,
+      "status": "Optimal"
+    },
+    {
+      "date": "2025-10-29",
+      "shift": "evening",
+      "scenario": "optimistic",
+      "predicted_patients": 65.01,
+      "total_capacity": 72.0,
+      "shortfall": 0.0,
+      "total_cost": 1128.0,
+      "coverage_rate": 1.0,
+      "status": "Optimal"
+    },
+    {
+      "date": "2025-10-29",
+      "shift": "evening",
+      "scenario": "pessimistic",
+      "predicted_patients": 43.34,
+      "total_capacity": 48.0,
+      "shortfall": 0.0,
+      "total_cost": 752.0,
+      "coverage_rate": 1.0,
+      "status": "Optimal"
+    },
+    {
+      "date": "2025-10-29",
+      "shift": "morning",
+      "scenario": "baseline",
+      "predicted_patients": 38.4,
+      "total_capacity": 40.0,
+      "shortfall": 0.0,
+      "total_cost": 660.0,
+      "coverage_rate": 1.0,
+      "status": "Optimal"
+    },
+    {
+      "date": "2025-10-29",
+      "shift": "morning",
+      "scenario": "optimistic",
+      "predicted_patients": 46.08,
+      "total_capacity": 48.0,
+      "shortfall": 0.0,
+      "total_cost": 752.0,
+      "coverage_rate": 1.0,
+      "status": "Optimal"
+    },
+    {
+      "date": "2025-10-29",
+      "shift": "morning",
+      "scenario": "pessimistic",
+      "predicted_patients": 30.72,
+      "total_capacity": 32.0,
+      "shortfall": 0.0,
+      "total_cost": 568.0,
+      "coverage_rate": 1.0,
+      "status": "Optimal"
+    },
+    {
+      "date": "2025-10-29",
+      "shift": "night",
+      "scenario": "baseline",
+      "predicted_patients": 28.54,
+      "total_capacity": 32.0,
+      "shortfall": 0.0,
+      "total_cost": 568.0,
+      "coverage_rate": 1.0,
+      "status": "Optimal"
+    },
+    {
+      "date": "2025-10-29",
+      "shift": "night",
+      "scenario": "optimistic",
+      "predicted_patients": 34.25,
+      "total_capacity": 40.0,
+      "shortfall": 0.0,
+      "total_cost": 660.0,
+      "coverage_rate": 1.0,
+      "status": "Optimal"
+    },
+    {
+      "date": "2025-10-29",
+      "shift": "night",
+      "scenario": "pessimistic",
+      "predicted_patients": 22.83,
+      "total_capacity": 24.0,
+      "shortfall": 0.0,
+      "total_cost": 376.0,
+      "coverage_rate": 1.0,
+      "status": "Optimal"
+    }
+  ]
+}

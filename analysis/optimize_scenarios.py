@@ -12,7 +12,7 @@ import os, json
 import pandas as pd
 from optimize_staffing_core import solve_one, summarize_roster  # uses your core
 
-def load_config(path="config/config.json"):
+def load_config(path="../config/config.json"):
     with open(path, "r") as f:
         return json.load(f)
 
@@ -39,7 +39,7 @@ def main():
     cfg = load_config()
     demand = load_scenario_demand()
 
-    roster_path = "public/samples/staff_roster.csv"  # keep same path you used
+    roster_path = "../public/samples/staff_roster.csv"  # keep same path you used
     roles, avail_by_role, wage_by_role = summarize_roster(roster_path)
     hours = int(cfg["staffing"]["defaultHoursPerShift"])
     cap_per_hr = cfg["staffing"]["capacityPerHourByRole"]

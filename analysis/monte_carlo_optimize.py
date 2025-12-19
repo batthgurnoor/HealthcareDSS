@@ -4,10 +4,10 @@ import pandas as pd
 import numpy as np
 from optimize_staffing_core import solve_one  # reuse your core
 
-def load_cfg(path="config/config.json"):
+def load_cfg(path="../config/config.json"):
     with open(path,"r") as f: return json.load(f)
 
-def load_shift_pi(path="data/predicted_demand_shift_pi.csv"):
+def load_shift_pi(path="../data/predicted_demand_shift_pi.csv"):
     return pd.read_csv(path)
 
 def sample_demand(lo, hi):
@@ -24,7 +24,7 @@ def main():
         for _, r in df.iterrows():
             demand = sample_demand(float(r["pi_lower"]), float(r["pi_upper"]))
             k = solve_one(r["date"], str(r["shift"]).lower().strip(), float(demand), cfg,
-                          roster_path="public/samples/staff_roster.csv")
+                          roster_path="../public/samples/staff_roster.csv")
             recs.append({
                 "draw": d,
                 "date": r["date"],

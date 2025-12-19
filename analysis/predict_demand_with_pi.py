@@ -16,11 +16,11 @@ import numpy as np
 from sklearn.linear_model import LinearRegression
 from sklearn.metrics import r2_score, mean_squared_error
 
-def load_config(path="config/config.json"):
+def load_config(path="../config/config.json"):
     with open(path, "r") as f:
         return json.load(f)
 
-def load_history(path="data/patient_arrivals_history.csv"):
+def load_history(path="../data/patient_arrivals_history.csv"):
     df = pd.read_csv(path)
     df["date"] = pd.to_datetime(df["date"])
     df["hour"] = df["hour"].astype(int)
