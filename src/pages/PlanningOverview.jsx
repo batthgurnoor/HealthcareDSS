@@ -173,9 +173,11 @@ export default function PlanningOverview() {
     <div className="max-w-6xl mx-auto p-6 space-y-6">
       <h1 className="text-2xl font-bold">Planning Overview</h1>
       <p className="text-sm text-gray-600">
-        One page for both: <span className="font-medium">Executive Overview</span> (manager_brief.csv) and{" "}
-        <span className="font-medium">Drill-down</span> (scenario_staffing_summary.csv). Optionally add{" "}
-        <code>mc_summary.csv</code> to show “Chance of Shortfall”.
+        This page brings both views together.<br></br> <span className="font-medium">Executive Overview</span> shows a single, roll-up table
+  (upload <code>data/manager_brief.csv</code>), while <span className="font-medium">Drill-down</span> lets you inspect each
+  date and shift in detail (upload <code>data/scenario_staffing_summary.csv</code>).<br></br> You can also upload
+  <code> data/mc_summary.csv</code> to display the estimated <span className="font-medium">chance of shortfall</span> based on
+  Monte Carlo simulations.
       </p>
 
       {/* tabs */}

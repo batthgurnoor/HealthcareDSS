@@ -96,15 +96,15 @@ export default function ManagerBrief() {
                 const risky = risk != null && risk >= 10; // 10%+
                 return (
                   <tr key={r.scenario} className="odd:bg-white even:bg-gray-50">
-                    <td className="p-3 capitalize">{r.scenario}</td>
-                    <td className="p-3 text-right">
+                    <td className="p-3 capitalize  text-gray-600">{r.scenario}</td>
+                    <td className="p-3 text-right text-gray-600">
                       {r.total_cost == null ? "—" : `$${r.total_cost.toLocaleString()}`}
                     </td>
-                    <td className="p-3 text-right">
+                    <td className="p-3 text-right text-gray-600">
                       {r.avg_coverage == null ? "—" : `${r.avg_coverage.toFixed(1)}%`}
                     </td>
-                    <td className="p-3 text-right">{r.rows_with_shortfall}</td>
-                    <td className="p-3 text-right">
+                    <td className="p-3 text-right text-gray-600">{r.rows_with_shortfall}</td>
+                    <td className="p-3 text-right text-gray-600">
                       {risk == null ? (
                         "—"
                       ) : (
