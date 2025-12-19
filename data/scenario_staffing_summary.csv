@@ -1,0 +1,16 @@
+date,shift,scenario,predicted_patients,total_capacity,shortfall,total_cost,coverage_rate,status
+2025-10-29,evening,best,80.4,88.0,0.0,1412.0,1.0,Optimal
+2025-10-29,evening,high,67.29,72.0,0.0,1128.0,1.0,Optimal
+2025-10-29,evening,low,41.07,48.0,0.0,752.0,1.0,Optimal
+2025-10-29,evening,median,54.18,56.0,0.0,944.0,1.0,Optimal
+2025-10-29,evening,worst,27.96,32.0,0.0,568.0,1.0,Optimal
+2025-10-29,morning,best,64.6,72.0,0.0,1128.0,1.0,Optimal
+2025-10-29,morning,high,51.54,56.0,0.0,944.0,1.0,Optimal
+2025-10-29,morning,low,25.42,32.0,0.0,568.0,1.0,Optimal
+2025-10-29,morning,median,38.48,40.0,0.0,660.0,1.0,Optimal
+2025-10-29,morning,worst,12.36,16.0,0.0,284.0,1.0,Optimal
+2025-10-29,night,best,55.59,56.0,0.0,944.0,1.0,Optimal
+2025-10-29,night,high,44.08,48.0,0.0,752.0,1.0,Optimal
+2025-10-29,night,low,21.05,24.0,0.0,376.0,1.0,Optimal
+2025-10-29,night,median,32.56,40.0,0.0,660.0,1.0,Optimal
+2025-10-29,night,worst,9.53,16.0,0.0,284.0,1.0,Optimal

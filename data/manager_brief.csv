@@ -1,0 +1,6 @@
+scenario,total_cost,avg_coverage,rows_with_shortfall,avg_shortfall_probability
+best,3484.0,100.0,0,0.0
+high,2824.0,100.0,0,0.0
+low,1696.0,100.0,0,0.0
+median,2264.0,100.0,0,0.0
+worst,1136.0,100.0,0,0.0
