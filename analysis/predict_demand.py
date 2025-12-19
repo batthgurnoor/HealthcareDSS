@@ -35,7 +35,7 @@ def load_config(path="config/config.json"):
     with open(path, "r") as f:
         return json.load(f)
 
-def load_history(path="data/patient_arrivals_history.csv"):
+def load_history(path="../data/patient_arrivals_history.csv"):
     
     df = pd.read_csv(path)
     df["date"] = pd.to_datetime(df["date"])
@@ -152,13 +152,13 @@ def apply_scenarios(shift_totals_df, config):
 
 def save_outputs(predicted_df, metrics):
     
-    os.makedirs("data", exist_ok=True)
-    os.makedirs("analysis", exist_ok=True)
+    os.makedirs("../data", exist_ok=True)
+    os.makedirs("../analysis", exist_ok=True)
 
-    predicted_path = "data/predicted_demand.csv"
+    predicted_path = "../data/predicted_demand.csv"
     predicted_df.to_csv(predicted_path, index=False)
 
-    metrics_path = "analysis/model_metrics.json"
+    metrics_path = "../analysis/model_metrics.json"
     with open(metrics_path, "w") as f:
         json.dump(metrics, f, indent=2)
 

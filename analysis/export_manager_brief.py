@@ -16,8 +16,8 @@ import numpy as np
 BASE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SCEN_SUMM = os.path.join(BASE, "data", "scenario_staffing_summary.csv")
 MC_SUMM   = os.path.join(BASE, "data", "mc_summary.csv")
-OUT_CSV   = os.path.join(BASE, "data", "manager_brief.csv")
-OUT_JSON  = os.path.join(BASE, "analysis", "manager_brief.json")
+OUT_CSV   = os.path.join(BASE, "data/", "manager_brief.csv")
+OUT_JSON  = os.path.join(BASE, "analysis/", "manager_brief.json")
 
 def maybe_load_mc():
     if not os.path.exists(MC_SUMM):
@@ -36,7 +36,7 @@ def main():
     df = pd.read_csv(SCEN_SUMM)
     df["scenario"] = df["scenario"].astype(str).str.strip().str.lower()
 
-    # Optional risk merge
+    
     mc = maybe_load_mc()
     if mc is not None:
         key = ["date","shift"]

@@ -5,8 +5,8 @@ import ROI from './pages/ROI'
 import Flow from './pages/Flow'
 import Inventory from './pages/Inventory'
 import StaffingResults from './pages/StaffingResults'
-import ScenarioCompare from './pages/ScenarioCompare'
 import ManagerBrief from "./pages/ManagerBrief.jsx";
+import PlanningOverview from './pages/PlanningOverview.jsx'
 
 
 function App() {
@@ -24,8 +24,8 @@ function App() {
         <NavLink to="/staffing-results" >
             Staffing Results
           </NavLink>
-        <NavLink to="/scenario-compare">Scenario Compare</NavLink>
         <NavLink to="/manager-brief">Manager Brief</NavLink>
+        <NavLink to="/planning-overview">Planning Overview</NavLink>
         </div>
       </div>
 
@@ -37,8 +37,9 @@ function App() {
           <Route path="/flow" element={<Flow />} />
           <Route path="/inventory" element={<Inventory />} />
           <Route path="/staffing-results" element={<StaffingResults />} />
-          <Route path="/scenario-compare" element={<ScenarioCompare />} />
+ 
           <Route path="/manager-brief" element={<ManagerBrief />} />
+          <Route path="/planning-overview" element={<PlanningOverview />} />
         </Routes>
         <div className='small my-4'>Healthcare DSS — React + Tailwind CSS </div>
       </div>

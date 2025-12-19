@@ -13,7 +13,7 @@ def load_config(path="../config/config.json"):
     with open(path, "r") as f:
         return json.load(f)
 
-def load_shift_pi(path="data/predicted_demand_shift_pi.csv"):
+def load_shift_pi(path="../data/predicted_demand_shift_pi.csv"):
     df = pd.read_csv(path)
     # expected columns: date, shift, predicted_patients, pi_lower, pi_upper
     # (predicted_patients is the mean; we’ll derive quantiles by linear interp within PI)
@@ -48,7 +48,7 @@ def main():
 
     out = pd.DataFrame(out_rows).sort_values(["date","shift","scenario"]).reset_index(drop=True)
     os.makedirs("data", exist_ok=True)
-    out.to_csv("data/scenario_demand.csv", index=False)
+    out.to_csv("../data/scenario_demand.csv", index=False)
     print("[OK] wrote data/scenario_demand.csv")
 
 if __name__ == "__main__":

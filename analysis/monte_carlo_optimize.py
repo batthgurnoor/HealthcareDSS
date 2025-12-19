@@ -39,7 +39,7 @@ def main():
     os.makedirs("analysis", exist_ok=True)
 
     out = pd.DataFrame(recs)
-    out.to_csv("data/mc_summary.csv", index=False)
+    out.to_csv("../data/mc_summary.csv", index=False)
 
     # quick aggregate (per shift): probability of shortfall + coverage percentiles
     def pct(a, q): return float(np.percentile(a, q))
@@ -52,7 +52,7 @@ def main():
         coverage_p90=("coverage_rate", lambda s: pct(s, 90))
     ).reset_index()
 
-    agg.to_json("analysis/mc_aggregate.json", orient="records", indent=2)
+    agg.to_json("../analysis/mc_aggregate.json", orient="records", indent=2)
     print("[OK] data/mc_summary.csv")
     print("[OK] analysis/mc_aggregate.json")
 

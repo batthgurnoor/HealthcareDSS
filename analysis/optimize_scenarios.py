@@ -16,7 +16,7 @@ def load_config(path="../config/config.json"):
     with open(path, "r") as f:
         return json.load(f)
 
-def load_scenario_demand(path="data/scenario_demand.csv"):
+def load_scenario_demand(path="../data/scenario_demand.csv"):
     df = pd.read_csv(path)
 
     # sanity check columns
@@ -79,10 +79,10 @@ def main():
             "status": kpis["status"]
         })
 
-    os.makedirs("data", exist_ok=True)
-    os.makedirs("analysis", exist_ok=True)
-    plan_path = "data/scenario_staffing_plan.csv"
-    summ_path = "data/scenario_staffing_summary.csv"
+    os.makedirs("../data", exist_ok=True)
+    os.makedirs("../analysis", exist_ok=True)
+    plan_path = "../data/scenario_staffing_plan.csv"
+    summ_path = "../data/scenario_staffing_summary.csv"
     pd.DataFrame(plan_rows).to_csv(plan_path, index=False)
     pd.DataFrame(summary_rows).to_csv(summ_path, index=False)
 
@@ -94,7 +94,7 @@ def main():
                     shortfall_rows=("shortfall", lambda s: int((s>0).sum()))))
 
     compare = by_scen.sort_values("scenario").to_dict(orient="records")
-    with open("analysis/scenario_compare.json","w") as f:
+    with open("../analysis/scenario_compare.json","w") as f:
         json.dump({"compare": compare}, f, indent=2)
 
     print(f"[OK] wrote {plan_path}")

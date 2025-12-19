@@ -129,10 +129,10 @@ def main():
     os.makedirs("data", exist_ok=True)
     os.makedirs("analysis", exist_ok=True)
 
-    hourly_pi.to_csv("data/predicted_demand_hourly_pi.csv", index=False)
-    shift_pi.to_csv("data/predicted_demand_shift_pi.csv", index=False)
+    hourly_pi.to_csv("../data/predicted_demand_hourly_pi.csv", index=False)
+    shift_pi.to_csv("../data/predicted_demand_shift_pi.csv", index=False)
 
-    with open("analysis/model_metrics.json","w") as f:
+    with open("../analysis/model_metrics.json","w") as f:
         json.dump(metrics, f, indent=2)
 
     print("[OK] data/predicted_demand_hourly_pi.csv")

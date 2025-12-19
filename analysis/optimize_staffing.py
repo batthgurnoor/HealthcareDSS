@@ -5,11 +5,11 @@ import json
 import pandas as pd
 from optimize_staffing_core import solve_one, summarize_roster 
 
-def load_config(path="config/config.json"):
+def load_config(path="../config/config.json"):
     with open(path, "r") as f:
         return json.load(f)
 
-def load_predicted_demand(path="data/predicted_demand.csv"):
+def load_predicted_demand(path="../data/predicted_demand.csv"):
     df = pd.read_csv(path)
     # normalize text
     for col in ["shift", "scenario"]:
@@ -32,7 +32,7 @@ def main():
     demand_df = demand_df.sort_values(["date", "shift", "scenario"]).reset_index(drop=True)
 
     # Use the shared core to summarize the roster (from the file you already use)
-    roster_path = "public/samples/staff_roster.csv"
+    roster_path = "../public/samples/staff_roster.csv"
     roles, avail_by_role, wage_by_role = summarize_roster(roster_path)
     print(f"Roles in roster: {roles}")
     print(f"Hours per shift: {hours_per_shift}")
@@ -83,12 +83,12 @@ def main():
             "status": kpis["status"]
         })
 
-    os.makedirs("data", exist_ok=True)
-    os.makedirs("analysis", exist_ok=True)
+    os.makedirs("../data", exist_ok=True)
+    os.makedirs("../analysis", exist_ok=True)
 
-    plan_path = "data/staffing_plan.csv"
-    summary_path = "data/staffing_summary.csv"
-    json_path = "analysis/optimize_report.json"
+    plan_path = "../data/staffing_plan.csv"
+    summary_path = "../data/staffing_summary.csv"
+    json_path = "../analysis/optimize_report.json"
 
     pd.DataFrame(plan_rows).to_csv(plan_path, index=False)
     pd.DataFrame(summary_rows).to_csv(summary_path, index=False)
