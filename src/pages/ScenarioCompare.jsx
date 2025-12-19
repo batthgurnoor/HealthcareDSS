@@ -133,14 +133,14 @@ export default function ScenarioCompare() {
 
       <div className="grid md:grid-cols-2 gap-4">
         <div className="p-4 rounded-2xl bg-gray-50 border">
-          <label className="block text-sm font-medium mb-2  text-gray-700">Scenario summary (.csv)</label>
+          <label className="block text-sm font-medium mb-2">Scenario summary (.csv)</label>
           <input type="file" accept=".csv" onChange={onUploadScenarioCsv}
-                 className="file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:bg-gray-800 file:text-white hover:file:bg-gray-700  text-gray-700" />
+                 className="file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:bg-gray-800 file:text-white hover:file:bg-gray-700" />
         </div>
         <div className="p-4 rounded-2xl bg-gray-50 border">
-          <label className="block text-sm font-medium mb-2  text-gray-700">Monte Carlo results (.csv) — optional</label>
+          <label className="block text-sm font-medium mb-2">Monte Carlo results (.csv) — optional</label>
           <input type="file" accept=".csv" onChange={onUploadMcCsv}
-                 className="file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:bg-gray-800 file:text-white hover:file:bg-gray-700  text-gray-700" />
+                 className="file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:bg-gray-800 file:text-white hover:file:bg-gray-700" />
           <p className="text-xs text-gray-500 mt-2">We compute the probability of shortfall per (date, shift) = fraction of draws with shortfall &gt; 0.</p>
         </div>
       </div>
@@ -152,11 +152,11 @@ export default function ScenarioCompare() {
           <table className="min-w-full text-sm">
             <thead className="bg-gray-100 text-gray-700">
               <tr>
-                <th className="p-3 text-left text-gray-700">Scenario</th>
-                <th className="p-3 text-right text-gray-700">Total Cost (period)</th>
-                <th className="p-3 text-right text-gray-700">Average Coverage</th>
-                <th className="p-3 text-right text-gray-700">Rows with Shortfall</th>
-                <th className="p-3 text-right text-gray-700">Chance of Shortfall (MC)</th>
+                <th className="p-3 text-left">Scenario</th>
+                <th className="p-3 text-right">Total Cost (period)</th>
+                <th className="p-3 text-right">Average Coverage</th>
+                <th className="p-3 text-right">Rows with Shortfall</th>
+                <th className="p-3 text-right">Chance of Shortfall (MC)</th>
               </tr>
             </thead>
             <tbody>
@@ -165,10 +165,10 @@ export default function ScenarioCompare() {
                 const risky = r.shortfallProb >= 0.10; // highlight if >= 10%
                 return (
                   <tr key={r.scenario} className="odd:bg-white even:bg-gray-50">
-                    <td className="p-3 capitalize text-gray-700">{r.scenario}</td>
-                    <td className="p-3 text-right text-gray-700">${r.totalCost.toLocaleString()}</td>
-                    <td className="p-3 text-right text-gray-700">{(r.avgCoverage*100).toFixed(1)}%</td>
-                    <td className="p-3 text-right text-gray-700">{r.shortfallRows}</td>
+                    <td className="p-3 capitalize">{r.scenario}</td>
+                    <td className="p-3 text-right">${r.totalCost.toLocaleString()}</td>
+                    <td className="p-3 text-right">{(r.avgCoverage*100).toFixed(1)}%</td>
+                    <td className="p-3 text-right">{r.shortfallRows}</td>
                     <td className="p-3 text-right">
                       <span className={`px-2 py-1 rounded-xl text-xs ${risky ? "bg-red-100 text-red-700 border border-red-200" : "bg-green-100 text-green-700 border border-green-200"}`}>
                         {riskPct}
