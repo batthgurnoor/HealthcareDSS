@@ -4,7 +4,7 @@
 **Audience:** Non-technical managers and classmates  
 **What you'll do:** Upload a few CSVs, choose simple settings, and read clear tables (now with scenarios and risk bands).
 
-> **Pages included:** Inventory > Patient Flow > Staffing > Staffing Results (CSV viewer) > Management ROI
+> **Pages included:** Inventory > Patient Flow > Staffing > Planning Overview > Staffing Results > Manager Brief > Management ROI
 
 ---
 
@@ -100,7 +100,29 @@
 
 ---
 
-## 5) Staffing Results — view scenario and risk outputs
+## 5) Planning Overview — quick scenario compare
+
+**Goal:** See a high-level, side-by-side compare of scenarios before diving into shift-level rows.
+
+### Steps
+1. Run the pipeline (from repo root):  
+   `python analysis/run_all.py`  
+   This writes `analysis/scenario_compare.json` and `data/scenario_staffing_summary.csv`.
+2. Open the **Planning Overview** page.
+3. Upload `data/scenario_staffing_summary.csv` to populate the overview.
+
+### What you'll see
+- **Scenario compare tiles/table:** cost, average coverage, and rows with shortfall per scenario (worst/low/median/high/best).  
+- Use this to choose which scenarios to inspect in detail on Staffing Results or Manager Brief.
+
+### Screenshot placeholder
+
+![Planning Overview page](ScreenShots/planning_overview.png)
+
+
+---
+
+## 6) Staffing Results — view scenario and risk outputs
 
 **Goal:** Load the pipeline outputs (scenarios and Monte Carlo) into the UI for easy comparison.
 
@@ -116,9 +138,33 @@
 - **Scenario table:** date, shift, scenario, predicted patients, total capacity, shortfall, total cost, coverage rate, status.
 - **Manager brief:** scenario-level totals, average coverage, rows with shortfall, and probability of shortfall (if Monte Carlo was run).
 
+
+### Screenshot placeholder
+
+![Staffing Results page](ScreenShots/staffing_summary.png)
+
 ---
 
-## 6) Management ROI — show value in money terms
+## 7) Manager Brief — fast risk/cost summary
+
+**Goal:** Give managers a one-page summary with cost, coverage, and risk.
+
+### Steps
+1. Run `python analysis/run_all.py` to generate `data/manager_brief.csv`.
+2. Open the **Manager Brief** page (or load via Staffing Results if combined).
+3. Upload `data/manager_brief.csv`.
+
+### What you'll see
+- **Scenario rollup:** total cost, average coverage (%), rows with shortfall, and average shortfall probability (%).  
+- Use this to decide staffing buffers or which scenario to plan against.
+
+### Screenshot placeholder
+
+![Manager Brief page](ScreenShots/Manager_brief.png)
+
+---
+
+## 8) Management ROI — show value in money terms
 
 **Goal:** Estimate payback and NPV to support rollout.
 
@@ -142,7 +188,7 @@
 
 ---
 
-## 7) Interpreting outputs
+## 9) Interpreting outputs
 
 | Term | What it means | Why it matters |
 |---|---|---|
@@ -160,7 +206,7 @@
 
 ---
 
-## 8) Troubleshooting
+## 10) Troubleshooting
 
 **"Missing required column(s)"**  
 - Headers must be lowercase and exact.  
@@ -188,21 +234,21 @@
 
 ---
 
-## 9) Sample walkthrough (quick demo)
+## 11) Sample walkthrough (quick demo)
 
 If you don't have real data yet:
 1. Go to `public/samples/` and use the provided CSVs.
 2. Inventory: set **Safety buffer = 5 days**, **Review period = 14 days** and run.  
 3. Flow: upload `patient_arrivals.csv`, set **Service time = 12 min**, **Util cap = 0.85**, **Wait target = 10 min** and recommend.  
 4. Staffing: upload both roster and requirements, set **Hours per shift = 8** and create schedule.  
-5. Pipeline: run `python analysis/run_all.py`, then upload `data/scenario_staffing_summary.csv` to **Staffing Results**.  
+5. Pipeline: run `python analysis/run_all.py`, then upload `data/scenario_staffing_summary.csv` to **Planning Overview** and **Staffing Results**; upload `data/manager_brief.csv` to **Manager Brief**.  
 6. ROI: enter rough savings (e.g., staffing 50k, inventory 20k, flow 15k), costs (setup 15k, annual 5k), **rate = 8%**, **years = 3**.
 
 You now have complete screenshots and numbers for your report.
 
 ---
 
-## 10) Contact
+## 12) Contact
 
 If something still doesn't work, include: the page, the CSV you used, what you clicked, and the error message.  
 This helps reproduce the problem quickly.
