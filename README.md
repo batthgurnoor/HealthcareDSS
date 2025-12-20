@@ -130,6 +130,9 @@ public/
 docs/
   design.md      # design document (why/what/how)
   user_guide.md  # screenshots and step-by-step usage
+  integration_architecture.md # how pieces connect (pipeline + UI)
+  reproducibility.md          # how to re-run and govern configs
+  uncertainty_analysis.md     # how PIs, scenarios, and Monte Carlo work
 analysis/
   predict_demand_with_pi.py    # forecast script with R^2, RMSE, and PI bounds
   build_scenarios_from_pi.py   # create 5 scenarios from PI quantiles
@@ -146,6 +149,8 @@ data/
   scenario_staffing_summary.csv   # scenario KPIs (cost, coverage, shortfall)
   mc_summary.csv                  # Monte Carlo draws within PI bounds
   manager_brief.csv               # compact cost/coverage/shortfall-probability rollup
+requirements.txt                  # pinned Python dependencies
+.python-version                   # interpreter version for reproducibility
 ```
 
 ---
