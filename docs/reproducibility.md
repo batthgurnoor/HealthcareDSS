@@ -12,7 +12,7 @@ This checklist proves the results are **data-driven**, **configurable**, and **r
   - `staffing.defaultHoursPerShift`
   - `staffing.capacityPerHourByRole` (patients/hour by role)
   - `forecastScenarios.*` (kept for completeness)
-  - `uncertainty.*` (predictionIntervalLevel, monteCarloDraws, scenarioQuantiles)
+  - `uncertainty.*` (predictionIntervalLevel, monteCarloDraws, scenarioQuantiles, seed)
   - `patientFlow.*`, `inventory.*`, `finance.*`
 
 > If you change **any** of these, you will get new forecasts/decisions — by design.

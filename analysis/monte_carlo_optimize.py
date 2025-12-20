@@ -19,6 +19,11 @@ def main():
     draws = int(cfg.get("uncertainty",{}).get("monteCarloDraws", 200))
     df = load_shift_pi()
 
+    seed = cfg.get("uncertainty", {}).get("seed")
+    if seed is not None:
+        random.seed(seed)
+        np.random.seed(seed)
+
     recs = []
     for d in range(draws):
         for _, r in df.iterrows():
