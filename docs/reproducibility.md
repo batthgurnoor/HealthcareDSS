@@ -1,6 +1,6 @@
-# Reproducibility & Governance (Assignment 2 — Step 4)
+# Reproducibility & Governance (Final Project)
 
-This checklist proves the results are **data-driven**, **configurable**, and **repeatable**.
+This checklist proves the results are **data-driven**, **configurable**, and **repeatable** with uncertainty, scenarios, and Monte Carlo risk.
 
 ---
 
@@ -11,38 +11,43 @@ This checklist proves the results are **data-driven**, **configurable**, and **r
 - `config/config.json` — all tunable assumptions
   - `staffing.defaultHoursPerShift`
   - `staffing.capacityPerHourByRole` (patients/hour by role)
-  - `forecastScenarios.*` (scenario multipliers)
-  - `patientFlow.*`, `inventory.*`, `finance.*` (kept for completeness)
+  - `forecastScenarios.*` (kept for completeness)
+  - `uncertainty.*` (predictionIntervalLevel, monteCarloDraws, scenarioQuantiles)
+  - `patientFlow.*`, `inventory.*`, `finance.*`
 
 > If you change **any** of these, you will get new forecasts/decisions — by design.
 
 ---
 
-## 2) One-click (two-command) pipeline
+## 2) One-click (single-command) pipeline
 
 ```bash
-# 1) Forecast demand per shift (writes predictions + accuracy metrics)
-python analysis/predict_demand.py
-
-# 2) Optimize staffing using that forecast (writes plan + KPIs)
-python analysis/optimize_staffing.py
+# End-to-end: forecast with PIs -> scenarios -> scenario optimization -> Monte Carlo -> manager brief
+python analysis/run_all.py
 ```
 
 **Expected outputs** (versioned artifacts you can attach to the report):
-- `data/predicted_demand.csv`
-- `analysis/model_metrics.json` (R², RMSE, sample sizes)
-- `data/staffing_plan.csv`
-- `data/staffing_summary.csv`
-- `analysis/optimize_report.json`
+- `data/predicted_demand_hourly_pi.csv`
+- `data/predicted_demand_shift_pi.csv`
+- `analysis/model_metrics.json` (R^2, RMSE, PI level, sample sizes)
+- `data/scenario_demand.csv`
+- `data/scenario_staffing_plan.csv`
+- `data/scenario_staffing_summary.csv`
+- `analysis/scenario_compare.json`
+- `data/mc_summary.csv`
+- `analysis/mc_aggregate.json`
+- `data/manager_brief.csv`
+- `analysis/manager_brief.json`
 
 ---
 
 ## 3) Results traceability
 
-- Each output row in `staffing_plan.csv` includes `date`, `shift`, `scenario`, and the **input** `predicted_patients` it is covering.
-- Capacity = `capacityPerHourByRole[role] × defaultHoursPerShift × staffScheduled`.
-- Cost = `wage_per_hour(role) × defaultHoursPerShift × staffScheduled`.
+- Each scenario output row in `scenario_staffing_summary.csv` includes `date`, `shift`, `scenario`, and the **input** `predicted_patients` it covers.
+- Capacity = `capacityPerHourByRole[role] * defaultHoursPerShift * staffScheduled`.
+- Cost = `wage_per_hour(role) * defaultHoursPerShift * staffScheduled`.
 - Coverage = `min(1, totalCapacity / predictedPatients)`.
+- Monte Carlo draws record `demand_sample`, `total_cost`, `coverage_rate`, `shortfall` to quantify risk (probability of shortfall, coverage percentiles).
 
 These formulas are **documented** and **re-computable** from the CSVs.
 
@@ -52,7 +57,7 @@ These formulas are **documented** and **re-computable** from the CSVs.
 
 ```bash
 # Python
-pip install pandas scikit-learn pulp
+pip install pandas numpy scikit-learn scipy pulp
 
 # Node (for the UI)
 npm install
@@ -73,10 +78,11 @@ npm run dev
 
 ## 6) Failure modes & how to recover
 
-- **CSV schema errors** → Fix headers (lowercase, exact names).  
-- **Shortfall remains** → Increase capacity per role in config or add staff to roster.  
-- **Poor forecast accuracy (high RMSE)** → Add more days, add features (day-of-week/holiday), or retrain later.  
-- **Solver not installed** → `pip install pulp`.
+- **CSV schema errors** -> Fix headers (lowercase, exact names).  
+- **Shortfall remains** -> Increase capacity per role in config or add staff to roster.  
+- **Poor forecast accuracy (high RMSE)** -> Add more days, add features (day-of-week/holiday), or retrain later.  
+- **Solver not installed** -> `pip install pulp`.  
+- **Monte Carlo too noisy** -> Increase `uncertainty.monteCarloDraws` (trade-off: runtime).
 
 ---
 
@@ -86,4 +92,3 @@ Anyone can reproduce the exact same numbers by using the **same**:
 - input CSVs,
 - `config/config.json`,
 - versions of the scripts (`analysis/*.py`).
-

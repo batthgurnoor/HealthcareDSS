@@ -1,48 +1,48 @@
 # User Guide
 
-**Project:** Healthcare DSS — Inventory, Patient Flow, Staffing, ROI  
-**Audience:** Non‑technical managers and classmates  
-**What you’ll do:** Upload a few CSVs, choose simple settings, and read clear tables.
+**Project:** Healthcare DSS -- Inventory, Patient Flow, Staffing, ROI  
+**Audience:** Non-technical managers and classmates  
+**What you'll do:** Upload a few CSVs, choose simple settings, and read clear tables (now with scenarios and risk bands).
 
-> **Pages included:** Inventory • Patient Flow • Staffing • Management ROI  
-
+> **Pages included:** Inventory > Patient Flow > Staffing > Staffing Results (CSV viewer) > Management ROI
 
 ---
 
 ## 1) Before you start
 
-- Prepare your CSV files (lowercase headers, spelled exactly as shown below).  
+- Prepare your CSV files (lowercase headers, spelled exactly as shown).  
   You can also use the sample CSVs in **`/public/samples/`**.
 
 | File | Required columns (lowercase) | Purpose |
 |---|---|---|
-| `inventory.csv` | `item, annual_demand, unit_cost, setup_cost, holding_cost_rate, lead_time_days, sd_demand_daily, service_level` | Inventory policy (this app uses the first **6** columns). |
+| `inventory.csv` | `item, annual_demand, unit_cost, setup_cost, holding_cost_rate, lead_time_days` | Inventory policy. |
 | `patient_arrivals.csv` | `date, hour, arrivals` | Average arrivals/hour for Patient Flow. |
 | `staff_roster.csv` | `staff_id, name, role, wage_per_hour` | Who can work, their role, wage. |
 | `shift_requirements.csv` | `date, shift, role, required` | How many people needed per shift/role. |
-
+| `scenario_staffing_summary.csv` | `date, shift, scenario, predicted_patients, total_capacity, shortfall, total_cost, coverage_rate, status` | Scenario KPIs (output from the pipeline, for Staffing Results page). |
+| `manager_brief.csv` | `scenario, total_cost, avg_coverage, rows_with_shortfall, avg_shortfall_probability` | Compact rollup (pipeline output, optional for Staffing Results). |
 
 ---
 
-## 2) Inventory — “days of cover” policy
+## 2) Inventory — days of cover policy
 
-**Goal:** Decide *when to reorder* and *how much to order* for each item.
+**Goal:** Decide when to reorder and how much to order for each item.
 
 ### Steps
 1. Open the **Inventory** page.
 2. Click **Upload** and select `inventory.csv`.
-3. Enter **Safety buffer (days)** (e.g., 3–7) and **Review period (days)** (e.g., 14).
+3. Enter **Safety buffer (days)** (e.g., 3-7) and **Review period (days)** (e.g., 14).
 4. Click **Calculate reorder points and order sizes**.
 
-### What you’ll see
-- **Totals (tiles):** Estimated annual cost (policy), monthly‑baseline cost, and savings.
+### What you'll see
+- **Totals (tiles):** Estimated annual cost (policy), monthly baseline cost, and savings.
 - **Table (per item):**
-  - **Reorder point (s, units):** When on‑hand hits this level, place an order.  
-  - **Order‑up‑to level (S, units):** Target stock right after an order arrives.  
+  - **Reorder point (s, units):** When on-hand hits this level, place an order.  
+  - **Order-up-to level (S, units):** Target stock right after an order arrives.  
   - **Typical order size (Q, units):** Usual quantity each review period.  
   - **Annual cost — policy:** Simple estimate (ordering + holding).  
   - **Annual cost — monthly baseline:** If you ordered monthly.  
-  - **Annual savings vs baseline:** Baseline − Policy (positive = saving).
+  - **Annual savings vs baseline:** Baseline - Policy (positive = saving).
 
 ### Screenshot placeholder
 
@@ -52,17 +52,17 @@
 
 ## 3) Patient Flow — recommend servers to keep waits down
 
-**Goal:** Pick the **smallest** number of servers (e.g., clinicians) that meets your targets.
+**Goal:** Pick the smallest number of servers (e.g., clinicians) that meets your targets.
 
 ### Steps
 1. Open the **Patient Flow** page.
 2. Click **Upload** and select `patient_arrivals.csv`. The app calculates the **average arrivals/hour**.  
    *(Or type your own arrival rate.)*
 3. Enter **Average service time (minutes)** (e.g., 12).
-4. Set **Utilization cap** (e.g., 0.85) and **Max queue‑wait target (minutes)** (e.g., 10).
+4. Set **Utilization cap** (e.g., 0.85) and **Max queue-wait target (minutes)** (e.g., 10).
 5. Click **Recommend server count**.
 
-### What you’ll see
+### What you'll see
 - **Recommended servers on duty** (the smallest number that meets both targets).
 - **Average utilization** (fraction of time busy, e.g., 0.78).  
 - **Probability of waiting** (chance a patient waits at all).  
@@ -76,7 +76,7 @@
 
 ---
 
-## 4) Staffing — build a low‑cost schedule
+## 4) Staffing — build a low-cost schedule
 
 **Goal:** Assign staff to requested shifts cheaply and fairly (one shift per person per day).
 
@@ -87,12 +87,12 @@
 4. Set **Hours per shift** (e.g., 8).
 5. Click **Create schedule**.
 
-### What you’ll see
+### What you'll see
 - **KPIs (tiles):** Total positions requested, positions filled, **coverage rate (%)**, total hours, estimated labor cost.
 - **Unfilled needs** (if any): date, shift, role, requested, filled, missing.
 - **Schedule table:** one row per assignment (date, shift, role, staff ID/name, wage, hours, cost).
 
-**Rule used:** pick the **lowest‑cost** qualified person for each slot; no one works more than **one shift per day**.
+**Rule used:** pick the lowest-cost qualified person for each slot; no one works more than one shift per day.
 
 ### Screenshot placeholder
 
@@ -100,21 +100,39 @@
 
 ---
 
-## 5) Management ROI — show value in money terms
+## 5) Staffing Results — view scenario and risk outputs
+
+**Goal:** Load the pipeline outputs (scenarios and Monte Carlo) into the UI for easy comparison.
+
+### Steps
+1. Run the pipeline (from repo root):  
+   `python analysis/run_all.py`  
+   This writes `data/scenario_staffing_summary.csv` and `data/manager_brief.csv`.
+2. Open the **Staffing Results** page.
+3. Upload `data/scenario_staffing_summary.csv` to see per-scenario KPIs (coverage, shortfall, cost).
+4. (Optional) Upload `data/manager_brief.csv` to see a compact summary including shortfall probability.
+
+### What you'll see
+- **Scenario table:** date, shift, scenario, predicted patients, total capacity, shortfall, total cost, coverage rate, status.
+- **Manager brief:** scenario-level totals, average coverage, rows with shortfall, and probability of shortfall (if Monte Carlo was run).
+
+---
+
+## 6) Management ROI — show value in money terms
 
 **Goal:** Estimate payback and NPV to support rollout.
 
 ### Steps
 1. Open the **Management ROI** page.
 2. Type **estimated yearly savings** for Staffing, Inventory, and Patient Flow.
-3. Enter **One‑time implementation cost (Year 0)** and **Annual operating cost**.
+3. Enter **One-time implementation cost (Year 0)** and **Annual operating cost**.
 4. Adjust **Discount rate (%/year)** and **Time horizon (years)** as needed.
 
-*(The page updates automatically—no “Run” button needed.)*
+*(The page updates automatically—no Run button needed.)*
 
-### What you’ll see
+### What you'll see
 - **Total estimated savings (per year)** and **Net benefit (per year)** (after operating cost).
-- **Payback period (months):** time to earn back the one‑time cost.
+- **Payback period (months):** time to earn back the one-time cost.
 - **NPV over the horizon:** value of all cash flows discounted at your rate.
 - **Cash flow table:** Year 0 setup cost, then yearly net benefits.
 
@@ -124,35 +142,37 @@
 
 ---
 
-## 6) Interpreting outputs
+## 7) Interpreting outputs
 
 | Term | What it means | Why it matters |
 |---|---|---|
 | **Reorder point (s)** | Stock level where you place an order. | Avoids stockouts during lead time. |
-| **Order‑up‑to level (S)** | Target stock right after receiving an order. | Keeps enough stock until the next review. |
+| **Order-up-to level (S)** | Target stock right after receiving an order. | Keeps enough stock until the next review. |
 | **Typical order size (Q)** | Rough order quantity each review period. | Helps plan order sizes and deliveries. |
-| **Utilization** | Fraction of time staff are busy. | Too high → long waits; too low → idle time. |
+| **Utilization** | Fraction of time staff are busy. | Too high -> long waits; too low -> idle time. |
 | **Expected queue wait** | Average time a patient waits before service. | A key service target for clinics/units. |
-| **Coverage rate** | Filled positions ÷ requested positions. | 100% means all shifts are covered. |
-| **Estimated labor cost** | Sum of (hourly wage × hours) over assignments. | Budget impact of the schedule. |
-| **Payback (months)** | Time to recoup the setup cost. | Faster payback → easier approval. |
-| **NPV** | Discounted value of all cash flows. | Positive NPV → financially worthwhile. |
+| **Coverage rate** | Filled positions / requested positions. | 100% means all shifts are covered. |
+| **Estimated labor cost** | Sum of (hourly wage * hours) over assignments. | Budget impact of the schedule. |
+| **Scenario** | One possible demand level (worst/low/median/high/best). | Compare coverage and cost under different demand levels. |
+| **Probability of shortfall** | Chance that demand exceeds capacity (Monte Carlo). | Flags risk so you can plan buffers. |
+| **Payback (months)** | Time to recoup the setup cost. | Faster payback -> easier approval. |
+| **NPV** | Discounted value of all cash flows. | Positive NPV -> financially worthwhile. |
 
 ---
 
-## 7) Troubleshooting
+## 8) Troubleshooting
 
-**“Missing required column(s): …”**  
-- Headers must be lowercase and **exact**.  
+**"Missing required column(s)"**  
+- Headers must be lowercase and exact.  
 - Fix the CSV headers (e.g., `item` not `Item`; `wage_per_hour` not `wage`).
 
-**“Invalid number in column …” or strange totals**  
+**"Invalid number in column" or strange totals**  
 - Remove `$`, `%`, and commas from numbers. Use plain numerals: `12345.67`.  
-- Make sure date columns look like `YYYY-MM-DD` and hours are `0–23`.
+- Make sure date columns look like `YYYY-MM-DD` and hours are `0-23`.
 
-**Patient Flow shows “Infinity” wait time**  
+**Patient Flow shows "Infinity" wait time**  
 - The system is overloaded (too few servers or too long service time).  
-- Try adding servers, shortening **Average service time**, or relaxing the **Queue‑wait target** or **Utilization cap**.
+- Try adding servers, shortening **Average service time**, or relaxing the **Queue-wait target** or **Utilization cap**.
 
 **Coverage rate below 100%**  
 - Not enough eligible staff for that role or day.  
@@ -160,30 +180,29 @@
 
 **Upload does nothing / wrong file**  
 - Make sure the file type is `.csv`.  
-- Double‑check you uploaded the right file for the right page.
+- Double-check you uploaded the right file for the right page.  
+- For Staffing Results, use `scenario_staffing_summary.csv` (or `manager_brief.csv` for the rollup).
 
 **The page looks unstyled**  
-- If you’re running locally, restart the dev server (`Ctrl+C` then `npm run dev`) and refresh the browser.
+- If you're running locally, restart the dev server (`Ctrl+C` then `npm run dev`) and refresh the browser.
 
 ---
 
+## 9) Sample walkthrough (quick demo)
 
----
-
-## 8) Sample walkthrough (quick demo)
-
-If you don’t have real data yet:
+If you don't have real data yet:
 1. Go to `public/samples/` and use the provided CSVs.
-2. Inventory: set **Safety buffer = 5 days**, **Review period = 14 days** → run.  
-3. Flow: upload `patient_arrivals.csv`, set **Service time = 12 min**, **Util cap = 0.85**, **Wait target = 10 min** → recommend.  
-4. Staffing: upload both roster and requirements, set **Hours per shift = 8** → create schedule.  
-5. ROI: enter rough savings (e.g., staffing 50k, inventory 20k, flow 15k), costs (setup 15k, annual 5k), **rate = 8%**, **years = 3**.
+2. Inventory: set **Safety buffer = 5 days**, **Review period = 14 days** and run.  
+3. Flow: upload `patient_arrivals.csv`, set **Service time = 12 min**, **Util cap = 0.85**, **Wait target = 10 min** and recommend.  
+4. Staffing: upload both roster and requirements, set **Hours per shift = 8** and create schedule.  
+5. Pipeline: run `python analysis/run_all.py`, then upload `data/scenario_staffing_summary.csv` to **Staffing Results**.  
+6. ROI: enter rough savings (e.g., staffing 50k, inventory 20k, flow 15k), costs (setup 15k, annual 5k), **rate = 8%**, **years = 3**.
 
 You now have complete screenshots and numbers for your report.
 
 ---
 
-## 9) Contact
+## 10) Contact
 
-If something still doesn’t work, include: the page, the CSV you used, what you clicked, and the error message.  
+If something still doesn't work, include: the page, the CSV you used, what you clicked, and the error message.  
 This helps reproduce the problem quickly.

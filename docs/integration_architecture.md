@@ -1,169 +1,137 @@
-# Integration & Architecture (Assignment 2)
+# Integration & Architecture (Final Project)
 
-**Project:** Healthcare DSS — Inventory, Patient Flow, Staffing, ROI  
-**Goal:** Show how the new predictive and prescriptive pieces connect to the DSS. Add business KPIs, simple API specs, and a short deployment plan.
+**Project:** Healthcare DSS -- Inventory, Patient Flow, Staffing, ROI  
+**Goal:** Show how the uncertainty-aware predictive and prescriptive pieces connect to the DSS. Include business KPIs, clear contracts, and a simple deployment/run plan.
 
 ---
 
-## 1) End‑to‑end data flow 
-
-
+## 1) End-to-end data flow
 
 ```
 Historical arrivals (CSV)
-       │
-       ▼
-[Predictive model]  analysis/predict_demand.py
-  - trains a simple regression on hour + weekend flag
-  - reports R² and RMSE to model_metrics.json
-  - forecasts next-day patients per shift
-       │
-       ▼
-Forecasted demand = data/predicted_demand.csv
-       │
-       ▼
-[Prescriptive model]  analysis/optimize_staffing.py
-  - reads forecast + roster + config capacities
+    |
+    v
+[Predictive model] analysis/predict_demand_with_pi.py
+  - trains regression on hour + weekend flag
+  - computes R^2, RMSE, and 80% prediction intervals
+  - writes hourly and shift PIs
+    |
+    v
+Shift forecast with PI = data/predicted_demand_shift_pi.csv
+    |
+    v
+[Scenario generator] analysis/build_scenarios_from_pi.py
+  - maps PI quantiles to 5 scenarios (worst/low/median/high/best)
+  - writes data/scenario_demand.csv
+    |
+    v
+[Scenario optimizer] analysis/optimize_scenarios.py
+  - reads scenario_demand + roster + config capacities
   - minimizes labor cost with coverage constraints
-  - writes staffing_plan.csv and staffing_summary.csv
-       │
-       ▼
-DSS UI 
-  - StaffingResults.jsx loads staffing_summary.csv for managers
-  - ROI.jsx uses totals to estimate financial impact
+  - writes scenario_staffing_plan.csv and scenario_staffing_summary.csv
+    |
+    v
+[Monte Carlo coverage] analysis/monte_carlo_optimize.py
+  - samples demand within PI bounds, resolves staffing
+  - writes data/mc_summary.csv and analysis/mc_aggregate.json
+    |
+    v
+[Manager rollup] analysis/export_manager_brief.py
+  - combines scenario KPIs + Monte Carlo shortfall risk
+  - writes data/manager_brief.csv and analysis/manager_brief.json
+    |
+    v
+UI
+  - StaffingResults.jsx loads scenario_staffing_summary.csv or manager_brief.csv
+  - ROI.jsx uses staffing totals; narrative can include risk bands
 ```
 
+`analysis/run_all.py` orchestrates the full sequence (forecast -> scenarios -> scenario optimization -> Monte Carlo -> manager brief).
+
 **Why this matters:**  
-- Predictions directly shape the optimization .  
-- Optimizer outputs feed the UI for human decisions and ROI.
+- Prediction intervals flow into scenarios; scenarios and Monte Carlo drive coverage/cost/risk KPIs.  
+- Optimizer outputs feed the UI and ROI, keeping decisions auditable and reproducible.
 
 ---
 
-## 2) Business KPIs 
+## 2) Business KPIs
 
-These KPIs appear in CSVs and the UI so a non-technical reader can judge value quickly.
+These KPIs appear in CSVs/JSON and the UI so non-technical readers can judge value quickly.
 
 ### Forecast (predictive)
-- **R²** — how much variance our model explains (higher is better)  
-- **RMSE** — average prediction error in “patients per hour” (lower is better)
+- **R^2** — variance explained (higher is better)  
++- **RMSE** — average prediction error (lower is better)  
+*- **PI bounds (80%)** — lower/upper demand envelopes per shift (used for scenarios and Monte Carlo)
 
-### Staffing (prescriptive)
-- **Coverage rate** = min(1, capacity ÷ demand)  
-- **Shortfall (patients)** = max(0, demand − capacity)  
-- **Total labor cost (per date/shift)** = wage × hours × headcount  
-- **Cost per predicted patient** = cost ÷ demand (when demand > 0)
+### Staffing (prescriptive + scenarios)
+- **Coverage rate** = min(1, capacity / demand)  
+- **Shortfall (patients)** = max(0, demand - capacity)  
+- **Total labor cost (per date/shift)** = wage * hours * headcount  
+- **Cost per predicted patient** = cost / demand (when demand > 0)
 
-### Roll‑ups (for reports)
-- **Total cost (period)** = sum over all slices  
-- **Avg coverage rate (period)** = mean of slice coverage rates  
-- **# slices with shortfall** = count where shortfall > 0
+### Risk (Monte Carlo + rollups)
+- **Probability of shortfall** per shift  
+- **Coverage percentiles** (e.g., P10, P50, P90)  
+- **Scenario compare** — cost, average coverage, and shortfall rows by scenario  
+- **Manager brief** — compact table with cost, coverage, and shortfall probability
 
-These KPIs are saved to `analysis/model_metrics.json` and `data/staffing_summary.csv`, and shown on the **Staffing Results** page.
+Rollups live in `analysis/model_metrics.json`, `analysis/scenario_compare.json`, `analysis/mc_aggregate.json`, `data/scenario_staffing_summary.csv`, and `data/manager_brief.csv`.
 
 ---
 
 ## 3) API design (documentation only)
 
-If we deployed this with a backend later, we could expose two simple endpoints.
-This shows a clear contract between the UI and the analytics layer.
+If we deploy later, two endpoints clarify contracts between UI and analytics.
 
 ### POST `/api/forecast`
-**Purpose:** Train and/or run the forecast and return predictions.  
-**Request (JSON):**
-```json
-{
-  "horizon_days": 1,
-  "scenarios": ["pessimistic", "baseline", "optimistic"]
-}
-```
-**Response (JSON):**
-```json
-{
-  "metrics": { "r2": 0.62, "rmse": 2.7 },
-  "predictions": [
-    { "date": "2025-10-29", "shift": "morning", "scenario": "baseline", "predicted_patients": 31.4 },
-    { "date": "2025-10-29", "shift": "evening", "scenario": "baseline", "predicted_patients": 28.1 }
-  ]
-}
-```
+Purpose: Train/run forecast with prediction intervals.  
+Request (JSON): minimal, could include `pi_level` and horizon.  
+Response (JSON): metrics (R^2, RMSE, pi_level) + shift rows with `predicted_patients`, `pi_lower`, `pi_upper`.
 
 ### POST `/api/optimize`
-**Purpose:** Create a staffing plan that covers forecasted demand with minimum cost.  
-**Request (JSON):**
-```json
-{
-  "date": "2025-10-29",
-  "demand": [
-    {"shift": "morning", "scenario": "baseline", "predicted_patients": 31.4},
-    {"shift": "evening", "scenario": "baseline", "predicted_patients": 28.1}
-  ],
-  "hoursPerShift": 8,
-  "capacityPerHourByRole": { "RN": 3.0, "LPN": 2.0, "Clerk": 0.5 }
-}
-```
-**Response (JSON):**
-```json
-{
-  "plan": [
-    {"shift": "morning", "role": "RN", "staffScheduled": 4, "roleCapacity": 96, "roleCost": 1280},
-    {"shift": "morning", "role": "LPN", "staffScheduled": 2, "roleCapacity": 32, "roleCost": 576}
-  ],
-  "kpis": {
-    "totalCapacity": 128,
-    "predictedPatients": 110,
-    "shortfall": 0,
-    "totalCost": 1856,
-    "coverageRate": 1.0
-  }
-}
-```
+Purpose: Create staffing plans that cover forecasted demand with minimum cost.  
+Request (JSON): array of `{date, shift, scenario, predicted_patients}`, plus hoursPerShift and capacityPerHourByRole.  
+Response (JSON): per-role plan rows + KPIs (`totalCapacity`, `predictedPatients`, `shortfall`, `totalCost`, `coverageRate`) per scenario/shift, plus rollups for scenario comparison.
 
-> Note:  we do **not** implement these APIs. The scripts + CSVs are enough. This API section just documents a clean interface for future work.
+> Note: scripts + CSVs are sufficient for this project. This API sketch documents a clean interface for future work.
 
 ---
 
 ## 4) Governance, config, and reproducibility
 
-- **No hidden constants:** All key assumptions live in `config/config.json` (hours per shift, capacity per hour by role, scenario multipliers, finance rates).  
+- **No hidden constants:** All key assumptions live in `config/config.json` (hours per shift, capacity per hour by role, finance rates, uncertainty block with PI level, Monte Carlo draws, scenario quantiles).  
 - **Clear inputs/outputs:**  
-  - Inputs: `data/patient_arrivals_history.csv`, `staff_roster.csv`  
-  - Predictive outputs: `data/predicted_demand.csv`, `analysis/model_metrics.json`  
-  - Prescriptive outputs: `data/staffing_plan.csv`, `data/staffing_summary.csv`, `analysis/optimize_report.json`
-- **How to re‑run from scratch:**  
-  1) `python analysis/predict_demand.py` → writes predictions  
-  2) `python analysis/optimize_staffing.py` → writes staffing plan + KPIs  
-  3) Open the React app and load `staffing_summary.csv` on **Staffing Results**
-
-
----
-
-## 5) Deployment plan 
-
-**Goal:** Keep it simple, cheap, and easy to maintain, but ready to grow.
-
-**Runtime choice:** For this class project, a **single‑machine** setup is enough: the React app is built with Vite and served as static files (e.g., on Netlify or an Nginx container), and the analytics run as **batch scripts** in Python that teammates execute locally. If we wanted a one‑click experience, we could wrap the two Python scripts in a tiny FastAPI service and run everything in a single **Docker** image.
-
-**Environments:** Start with **dev only** (local). If we share with others, add a lightweight **staging** deploy (same Docker image, sample data). Production is out of scope , but the design supports it.
-
-**Data handling:** We purposely keep **CSV I/O** to avoid database setup. If data volume grows, we can move to SQLite or Postgres and keep the same contracts. The config remains a simple JSON file so changes don’t require code edits.
-
-**Scheduling:** If daily forecasts are needed, use a cron job or GitLab CI scheduled pipeline that runs `predict_demand.py` each morning, commits `predicted_demand.csv` to a branch, and triggers `optimize_staffing.py`. Artifacts (the CSVs) can be published for the UI to download.
-
-**Scalability:** The linear programs are tiny (per shift), so CBC (PuLP’s default) is fine. If we add many roles/units, we can still solve fast on a shared VM. For heavier loads, we can swap to OR‑Tools or a hosted solver without changing the model’s structure.
-
-**Observability:** We track **R²/RMSE** for the forecast and **coverage/cost/shortfall** for optimization. If any metric degrades (e.g., RMSE spikes), we alert and retrain with more features (day of week, holidays).
-
-**Security:** No PHI is stored; data is aggregate arrivals and wages. Restrict repo access, don’t commit sensitive CSVs, and avoid public links for artifacts.
-
-**Change management:** Parameters (capacities, hours) are in `config.json`. Changes are versioned in Git, reviewed by ops + finance, and documented in release notes. This keeps decisions auditable.
+  - Inputs: `data/patient_arrivals_history.csv`, `public/samples/staff_roster.csv`  
+  - Predictive outputs: `data/predicted_demand_hourly_pi.csv`, `data/predicted_demand_shift_pi.csv`, `analysis/model_metrics.json`  
+  - Scenario outputs: `data/scenario_demand.csv`, `data/scenario_staffing_plan.csv`, `data/scenario_staffing_summary.csv`, `analysis/scenario_compare.json`  
+  - Monte Carlo: `data/mc_summary.csv`, `analysis/mc_aggregate.json`  
+  - Manager rollup: `data/manager_brief.csv`, `analysis/manager_brief.json`
+- **How to re-run from scratch:**  
+  1) `python analysis/run_all.py`  
+  2) Load `scenario_staffing_summary.csv` or `manager_brief.csv` in StaffingResults.jsx  
+  3) Use ROI with updated staffing totals for finance impact
 
 ---
 
-## 6) What changed vs. Assignment 1 (at a glance)
+## 5) Deployment plan
 
-- Added **predictive** (forecast) and **prescriptive** (optimization) scripts in `/analysis`  
-- Added `/data` inputs/outputs and `/config/config.json` for assumptions  
-- Added **Staffing Results** page to load optimizer KPIs for managers  
-- Documented **KPIs**, **API contracts**, and **deployment** strategy
+**Goal:** Simple, cheap, and easy to maintain; ready to grow.
 
+- **Runtime choice:** Single-machine setup is enough: React app built with Vite and served as static files (e.g., Nginx/Netlify). Analytics run as batch Python scripts locally. A thin FastAPI wrapper could expose forecast/optimize later; all can live in one Docker image.
+- **Environments:** Start with dev (local). If sharing, add a lightweight staging deploy with sample data. Production is out of scope but supported by the same contracts.
+- **Data handling:** Keep CSV I/O to avoid DB setup. If volume grows, move to SQLite/Postgres and keep the same schemas. Config stays JSON so parameter changes require no code edits.
+- **Scheduling:** For daily runs, a cron/CI job can call `analysis/run_all.py`, publish the CSV/JSON artifacts, and make them available to the UI.
+- **Scalability:** Small LPs/greedy assignments solve fast. CBC (PuLP default) is fine. For larger instances, swap to OR-Tools/other solvers without changing the model structure.
+- **Observability:** Track R^2/RMSE and PI level for forecasts; coverage/cost/shortfall for scenarios; probability of shortfall and coverage percentiles for Monte Carlo. Alert if RMSE or shortfall probability spikes.
+- **Security:** No PHI; data is aggregate arrivals and wages. Restrict repo access, don’t commit sensitive CSVs, avoid public artifact links.
+- **Change management:** Parameters live in `config.json`. Version changes in Git, review with ops/finance, and document in release notes for auditability.
 
+---
+
+## 6) What changed vs. Assignment 1
+
+- Added forecast with prediction intervals (`predict_demand_with_pi.py`)  
+- Added scenario generation from PI quantiles and scenario optimization (`build_scenarios_from_pi.py`, `optimize_scenarios.py`)  
+- Added Monte Carlo coverage/shortfall risk and a manager brief rollup (`monte_carlo_optimize.py`, `export_manager_brief.py`)  
+- Added `analysis/run_all.py` to orchestrate the full uncertainty pipeline  
+- UI consumes new CSVs (scenario summaries, manager brief) while keeping the original pages intact
