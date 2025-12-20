@@ -254,15 +254,15 @@ export default function PlanningOverview() {
                 const risky = risk != null && risk >= 10; // percent
                 return (
                   <tr key={r.scenario} className="odd:bg-white even:bg-gray-50">
-                    <td className="p-3 capitalize">{r.scenario}</td>
-                    <td className="p-3 text-right">
+                    <td className="p-3 capitalize text-gray-600">{r.scenario}</td>
+                    <td className="p-3 text-right text-gray-600">
                       {r.total_cost == null ? "—" : `$${r.total_cost.toLocaleString()}`}
                     </td>
-                    <td className="p-3 text-right">
+                    <td className="p-3 text-right text-gray-600">
                       {r.avg_coverage == null ? "—" : `${r.avg_coverage.toFixed(1)}%`}
                     </td>
-                    <td className="p-3 text-right">{r.rows_with_shortfall}</td>
-                    <td className="p-3 text-right">
+                    <td className="p-3 text-right text-gray-600">{r.rows_with_shortfall}</td>
+                    <td className="p-3 text-right text-gray-600">
                       {risk == null ? (
                         "—"
                       ) : (
@@ -312,15 +312,15 @@ export default function PlanningOverview() {
                     const risky = risk != null && risk >= 0.1;
                     return (
                       <tr key={i} className="odd:bg-white even:bg-gray-50">
-                        <td className="p-3">{r.date}</td>
-                        <td className="p-3 capitalize">{r.shift}</td>
-                        <td className="p-3 capitalize">{r.scenario}</td>
-                        <td className="p-3 text-right">{r.predicted_patients}</td>
-                        <td className="p-3 text-right">{r.total_capacity}</td>
-                        <td className="p-3 text-right">{r.shortfall}</td>
-                        <td className="p-3 text-right">{(r.coverage_rate * 100).toFixed(1)}%</td>
-                        <td className="p-3 text-right">${r.total_cost.toLocaleString()}</td>
-                        <td className="p-3">{r.status}</td>
+                        <td className="p-3 text-gray-600">{r.date}</td>
+                        <td className="p-3 text-gray-600 capitalize">{r.shift}</td>
+                        <td className="p-3 text-gray-600 capitalize">{r.scenario}</td>
+                        <td className="p-3 text-right text-gray-600">{r.predicted_patients}</td>
+                        <td className="p-3 text-right text-gray-600">{r.total_capacity}</td>
+                        <td className="p-3 text-right text-gray-600">{r.shortfall}</td>
+                        <td className="p-3 text-right text-gray-600">{(r.coverage_rate * 100).toFixed(1)}%</td>
+                        <td className="p-3 text-right text-gray-600">${r.total_cost.toLocaleString()}</td>
+                        <td className="p-3 text-gray-600">{r.status}</td>
                         <td className="p-3 text-right">
                           {risk == null ? (
                             "—"
@@ -363,10 +363,10 @@ export default function PlanningOverview() {
                       const risky = s.shortfallProb != null && s.shortfallProb >= 0.1;
                       return (
                         <tr key={s.scenario} className="odd:bg-white even:bg-gray-50">
-                          <td className="p-3 capitalize">{s.scenario}</td>
-                          <td className="p-3 text-right">${s.totalCost.toLocaleString()}</td>
-                          <td className="p-3 text-right">{s.avgCoverage.toFixed(1)}%</td>
-                          <td className="p-3 text-right">{s.shortfallRows}</td>
+                          <td className="p-3 text-gray-600 capitalize">{s.scenario}</td>
+                          <td className="p-3 text-right text-gray-600">${s.totalCost.toLocaleString()}</td>
+                          <td className="p-3 text-right text-gray-600">{s.avgCoverage.toFixed(1)}%</td>
+                          <td className="p-3 text-right text-gray-600">{s.shortfallRows}</td>
                           <td className="p-3 text-right">
                             {s.shortfallProb == null ? "—" : (
                               <span className={`px-2 py-1 rounded-xl text-xs ${
