@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ## Author
 
 - Name: Gurnoor Singh Batth
@@ -212,3 +213,7 @@ Please see below for screen shots of both chat transcripts
 - **Coverage vs cost:** coverage rises with demand quantiles; worst-case scenarios add cost to avoid shortfall, while median/best keep costs lean.  
 - **Risk view:** Monte Carlo shows probability of shortfall per shift and coverage percentiles, and `manager_brief.csv` condenses this for quick decisions.  
 - **ROI link:** staffing outputs still feed management ROI to estimate payback/NPV with explicit cash-flow assumptions.
+=======
+# HealthcareDSS
+A small Decision Support System (DSS) for hospital/clinic operations. It helps managers answer everyday questions with explainable rules and now surfaces risk bands and scenario comparisons:
+>>>>>>> 2c7503806d3bddd5f0c6f0cf5cea04ff10ee5a3f
